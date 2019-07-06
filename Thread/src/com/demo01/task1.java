@@ -1,13 +1,12 @@
 package com.demo01;
 
 class task01 extends Thread{
-		
 	public void run(){
 		int i = 0;
 		for(; i < 10; i ++){
 			try {
 				this.sleep(500);
-				System.out.println("不！金人最帅！");
+				System.out.println("不！诸葛亮最帅！");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
