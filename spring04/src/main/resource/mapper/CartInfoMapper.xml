@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yc.fresh.mapper.CartInfoMapper">
+	<insert id="add" parameterType="CartInfo">
+		insert into cartInfo values(0, #{mno}, #{gno}, #{num})
+	</insert>
+	
+	<select id="findByMno" parameterType="int" resultType="CartInfo">
+		select cno, cf.gno, num, pics, gname, price, unit, weight from cartInfo cf, goodsInfo gf where cf.gno = gf.gno and cf.mno = #{_parameter}
+			
+	</select>
+	
+	<select id="findByCno03" resultType="CartInfo">
+		select cno, cf.gno, num, pics,mno,  gname, price, unit, weight from cartInfo cf, goodsInfo gf where cf.gno = gf.gno  and cno in
+		<foreach collection="array" open="(" close=")" separator="," item="item">
+			#{item}
+		</foreach>		
+			
+	</select>
+	
+	
+	
+	<update id=	"delete" >
+		delete from cartInfo where cno in
+			<foreach collection="array" separator="," close=")" open="(" item="item">
+				#{item}
+			</foreach>
+	</update>
+	
+	<update id="update" parameterType="CartInfo">
+		update cartInfo set num = num + #{num} where cno = #{cno}
+	</update>
+	
+	<select id="findByMnoAndGno" parameterType="map" resultType="CartInfo">
+		select * from cartInfo where gno = #{gno} and mno = #{mno}
+	</select>
+	
+	
+	<select id="findCountCno" parameterType="int" resultType="int">
+		select count(cno) from cartInfo where mno = #{_parameter}
+	</select>
+	
+</mapper>
+
+
+
+

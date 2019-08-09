@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+encoding//src/main/java/com/yc/fresh/mail/EmailHelper.java=UTF-8
+encoding//src/main/java/com/yc/fresh/redis/IRedisDao.java=UTF-8
+encoding//src/main/java/com/yc/fresh/redis/RedisDaoImpl.java=UTF-8
+encoding//src/main/java/com/yc/fresh/util/SendMailUtil.java=UTF-8
+encoding//src/main/resource/mail.properties=UTF-8
+encoding//src/main/webapp/fresh.sql=UTF-8

@@ -1,0 +1,333 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>天天生鲜-支付订单</title>
+ <link rel="shortcut icon" href="../images/logo.png">
+ <link rel="stylesheet" href="../css/reset.css">
+ <link rel="stylesheet" href="../css/main.css">
+ <link rel="stylesheet" href="../css/order.css">
+ <link rel="stylesheet" href="../css/bootstrap.css">
+ <link rel="stylesheet" href="../css/city.css">
+  <script src="../js/jquery-3.4.1.min.js"></script>
+  <script src="../js/bootstrap.js"></script>
+  <script src="../js/city.js"></script>
+  <style>
+	.size_input{
+		width:300px;
+	}
+	
+  </style>
+ <script type="text/javascript">
+ var selectcity1 = 1;
+ var selectcity2 = 1;
+ var selectcity3 = 1;
+ 
+ var totalNum = 0;
+ var totalPrice = 0;
+ $(function(){
+	 jiexiXML();
+	 listener();
+	
+	$("#cityInput01_xjr").val("--请选择省份--");
+	$("#cityInput02_xjr").val("--请选择城市--");
+	$("#cityInput03_xjr").val("--请选择地区--");
+	
+	 $('[data-toggle="popover"]').popover();
+	 $.post("../regist/getinfo", null , function(data){
+			var str = "";
+			if(data.mno == 0){
+				str += '<div class="login_info fl"><span>欢迎您：  [账号]</span></div>';
+				str += '<div class="login_btn fl"><a href="login.html">登录</a>';
+				str += '<span> | </span>';
+				str += '<a href="register.html">注册</a>';
+			}else{
+				str += '<div class="login_info fl"><span>欢迎您：  ['+data.nickName+']</span></div>';
+				str += '<div class="login_btn fl"><a href="login.html">注销</a>';
+			}
+				str += '</div><div class="user_link fl">';
+				str += '<span> | </span><a href="#">用户中心</a><span> | </span><a href="#">我的订单</a></div>';
+				$("#head01").html("").html($(str));
+		}, "json");
+	 
+	 var arr = location.hash.replace("#","");
+	 $.post("../cart/findByCno03", {cno:arr}, function(data){
+
+	 var str = "";
+	 str += '<ul class="goods_list_th clearfix"><li class="col01">商品名称</li><li class="col02">商品单位</li>';	 
+	str += '<li class="col03">商品价格</li><li class="col04">数量</li><li class="col05">小计</li></ul>';
+	 $.each(data, function(index, item){
+		str += '<ul class="goods_list_td clearfix"><li class="col01">'+(index + 1)+'</li><li class="col02"><img src="../../../pics/'+item.pics.split(";")[0]+'"></li>'; 
+		str += '<li class="col03">'+item.gname+'</li><li class="col04">'+item.weight + item.unit+'</li><li class="col05">'+item.price+'元</li><li class="col06">'+item.num+'</li>'; 
+		str += '<li class="col07">'+(item.num * item.price).toFixed(2)+'元</li></ul>';
+		totalNum  ++;	
+		totalPrice +=  item.num * item.price;
+	 });
+	 
+	 $("#show_item").html("").append($(str));
+	 $("#totalpricea").text((totalPrice + 10).toFixed(2) + "元");
+	 $("#totalSum").text((totalPrice).toFixed(2) + "元");
+	 $("#totalNuma").text(totalNum);
+	 },"json");
+ });
+ 
+ 
+	//确认按钮监听
+	function save_change(){
+		//$("#mymodal").popover('hide');
+		
+		var user = $("#input_user").val();
+		var number = $("#input_num").val();
+		var addr = $("#input_addr").val();
+		var cityInput01_xjr = $("#cityInput01_xjr").val();
+		var cityInput02_xjr = $("#cityInput02_xjr").val();
+		var cityInput03_xjr = $("#cityInput03_xjr").val();
+		
+		
+		
+		var count = 3;
+		if(user == null || $.trim(user).length < 0 || user == ""){
+			 $("#input_user").popover('show');
+			 count --;
+		}
+		if(number == null || $.trim(number).length < 0 || number == ""){
+			 $("#input_num").popover('show');
+			 count --;
+		}
+		if(addr == null || $.trim(addr).length < 0 || addr == ""){
+			 $("#input_addr").popover('show');
+			 count --;
+		}
+		if(cityInput01_xjr == null || $.trim(cityInput01_xjr).length < 0 || cityInput01_xjr == "" || cityInput01_xjr == '--请选择省份--'){
+			 $("#cityInput01_xjr").popover('show');
+			 count --;
+		}
+		if(cityInput02_xjr == null || $.trim(cityInput02_xjr).length < 0 || cityInput02_xjr == "" || cityInput01_xjr == '--请选择城市--'){
+			 $("#cityInput02_xjr").popover('show');
+			 count --;
+		}
+		if(cityInput03_xjr == null || $.trim(cityInput03_xjr).length < 0 || cityInput03_xjr == "" || cityInput01_xjr == '--请选择地区--'){
+			 $("#cityInput03_xjr").popover('show');
+			 count --;
+		}
+		
+		
+		if(count == 3){
+			/*
+			添加地址的方法
+			*/
+			$.post("../addr/add",{name:user, tel:number, province:cityInput01_xjr, city:cityInput02_xjr, area:cityInput02_xjr, addr:addr}, function(data){
+				
+				data = parseInt($.trim(data));
+				
+				if(data > 0){
+					alert("创建成功！");
+					showAddr();
+				}else{
+					alert("创建失败！");
+				}
+				 $("#input_user").val("");
+				 $("#input_num").val("");
+				 $("#input_addr").val("");
+				 $("#cityInput01_xjr").val("");
+				 $("#cityInput02_xjr").val("");
+				 $("#cityInput03_xjr").val("");
+			},"text");
+			$("#myModal").modal('hide');
+		}else{
+		}
+	}
+	
+$(function(){
+	showAddr();
+/* 	$("#myModals").on("hidden.bs.modal", function(){
+		//关闭模态框后清除模态框数据
+		$(this).removeData('bs.modal');
+		}); */
+})	
+
+function showAddr(){
+	var str = "";
+	$.post("../addr/findByMno",null, function(data){
+		$.each(data, function(index, item){
+		str += '<input type="radio" name="ra" checked="true">'+item.province + item.city + item.area + item.addr +' （'+item.name+'）';
+			str += '<br/>';
+		});
+		$("#dd_dd").html("").append($(str));
+	}, "json");
+}
+	
+ </script>
+</head>
+<body>
+	<!-- 头部  -->
+	<div class="header_con">
+    	<div class="header">
+    		<div class="welcome fl">欢迎来到天天生鲜</div>
+    		<div class="fr" id="head01">
+             </div>  
+    	</div>
+    </div>
+    
+    <!-- 搜素框 -->
+    <div class="search_bar clearfix">
+        <a href="index.html" class="logo fl"><img src="../images/logo.png"></a>
+        <div class="search_con fl">
+            <input type="text" placeholder="搜素商品" name="" class="input_text fl">
+            <input type="button" value="搜索" class="input_btn fr">
+        </div>
+    </div>
+    
+    <!-- 收货地址 -->
+    <h3 class="common_title">确认收货地址</h3>
+
+	<div class="common_list_con clearfix">
+		<dl>
+			<dt>寄送到：</dt>
+			<dd id="dd_dd">
+			
+			</dd>
+			<!-- <dd><input type="radio" name="" checked="">北京市 海淀区 东北旺西路8号中关村软件园 （李思 收） 159****0775</dd> -->
+		</dl> 
+	
+		<button type="button" class="btn btn-primary btn-lg"  data-toggle="modal" data-target="#myModal" style="width: 150px;height: 40px; position: absolute; left: 1000px; top: 20px;">
+  				编辑收货地址
+		</button>
+	
+	</div>
+    <!--  编辑收货地址  -->
+	<div id="addr_div">
+		 <!-- Modal -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">编辑收货地址</h4>
+		      </div>
+		      <div class="modal-body">
+			      	<div class="input-group input-group-lg">
+					  <span class="input-group-addon" id="sizing-addon2">收货人 </span>
+					  <input id="input_user" type="text" class="form-control size_input" placeholder="收货人" aria-describedby="sizing-addon2" data-toggle="popover" data-trigger="focus" title="校验" data-content="请输入收货人姓名"  data-placement="top">
+					</div>
+		      </div>
+		      <div class="modal-body">
+		      	 	<div class="input-group input-group-lg">
+					  <span class="input-group-addon" id="sizing-addon2">联系方式</span>
+					  <input id="input_num" type="text" class="form-control size_input" placeholder="联系方式" aria-describedby="sizing-addon2" data-toggle="popover" data-trigger="focus" title="校验" data-content="请输入收货人的联系方式"  data-placement="top">
+					</div>
+		      </div>
+		      
+		      <div class="modal-body">
+			   		<div id="city01_xjr">
+						<label style="display:inline-block; width:48px; height:40px; line-height:40px; text-align:center; font-size:14px; float:left">地区：</label>	
+						<div id="city0101_xjr" >
+							<input type="text"  id="cityInput01_xjr" readonly="readonly" data-toggle="popover" data-trigger="focus"  data-content="请选择省份"  data-placement="top"/>	
+							<select id = "citySelect01" size=7>
+							</select>
+						</div>	
+						<div id="city0102_xjr" >
+							<input type="text" id="cityInput02_xjr" readonly="readonly" data-toggle="popover" data-trigger="focus"  data-content="请选择城市"  data-placement="top"/>	
+							<select id = "citySelect02" size=7>
+							</select>
+						</div>	
+						<div id="city0103_xjr" >
+							<input type="text" id="cityInput03_xjr" readonly="readonly" data-toggle="popover" data-trigger="focus"  data-content="请选择地区"  data-placement="top"/>	
+							<select id = "citySelect03" size=7>
+							</select>
+						</div>			
+					</div>
+				</div>
+		   	
+		   	<br/>
+			<br/>		      
+			<br/>		      
+		      
+		      <div class="modal-body">
+			      <div class="input-group input-group-lg"> 
+						  <span class="input-group-addon " id="sizing-addon2">收货地址</span>
+						  <input id="input_addr"  type="text" class="form-control size_input" placeholder="收货地址" aria-describedby="sizing-addon2"  data-toggle="popover" data-trigger="focus" title="校验" data-content="请输入收货人的详细地址,具体如门牌号等"  data-placement="top" >
+					</div>
+		     	 </div>
+				
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+		        <button type="button" class="btn btn-primary" onclick="save_change()">确定</button>
+		      </div>
+		    </div>
+		 	</div>
+		</div>
+	</div>
+	    
+    
+   	<!-- 支付方式 -->	
+    <h3 class="common_title">支付方式</h3>	
+	<div class="common_list_con clearfix">
+		<div class="pay_style_con clearfix">
+			<input type="radio" name="pay_style" checked>
+			<label class="cash">货到付款</label>
+			<input type="radio" name="pay_style">
+			<label class="weixin">微信支付</label>
+			<input type="radio" name="pay_style">
+			<label class="zhifubao"></label>
+			<input type="radio" name="pay_style">
+			<label class="bank">银行卡支付</label>
+		</div>
+	</div>
+    
+   	<!-- 商品列表 -->
+    <h3 class="common_title">商品列表</h3>
+	<div class="common_list_con clearfix" id="show_item">
+	</div>
+     
+    <!-- 金额结算 -->	
+    <h3 class="common_title">总金额结算</h3>
+	<div class="common_list_con clearfix">
+		<div class="settle_con">
+			<div class="total_goods_count">共<em id="totalNuma"></em>件商品，总金额<b id="totalSum"></b></div>
+			<div class="transit">运费：<b>10元</b></div>
+			<div class="total_pay">实付款：<b id="totalpricea"></b></div>
+		</div>
+	</div>
+	<div class="order_submit clearfix">
+		<a href="javascript:;" id="order_btn">提交订单</a>
+	</div>	
+    
+    <div class="popup_con">
+		<div class="popup">
+			<p>订单提交成功！</p>
+		</div>
+		
+		<div class="mask"></div>
+	</div>    
+        
+    <!-- 版权所有 -->
+	<div class="footer">
+    	<div class="foot_link">
+    		<a href="#">关于我们</a> <span> | </span>
+            <a href="#">联系我么</a> <span> | </span>
+            <a href="#">招聘人才</a> <span> | </span>
+            <a href="#">友情链接</a> 
+    	</div>
+    	<p>CcpyRight &copy; 2019 衡阳市源辰信息科技有限公司 All Rights Reserverd</p>
+        <p>电话：0734-8355998 湘ICP备16015987号</p>
+    </div>
+    
+    <script type="text/javascript">
+		$('#order_btn').click(function() {
+			localStorage.setItem('order_finish',2);
+
+			$('.popup_con').fadeIn('fast', function() {
+
+				setTimeout(function(){
+					$('.popup_con').fadeOut('fast',function(){
+						window.location.href = 'index.html';
+					});	
+				},3000)
+			});
+		});
+		
+		
+ 	</script>
+</body>
+</html>

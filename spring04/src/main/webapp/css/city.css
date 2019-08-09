@@ -1,0 +1,100 @@
+@CHARSET "UTF-8";
+
+
+#cityInput01_xjr{
+	height:40px;
+	width:120px;
+	border:1px solid  #999;
+	float:left;
+	line-height:35px;
+	text-align:center;
+	
+}
+
+#city0101_xjr{
+	width:120px; 
+	height:40px;  
+	 float:left;
+	 margin-left:28px;
+}
+
+#citySelect01{
+	width:120px;
+	float:left;
+	position:relative;
+	z-index:3;
+}
+
+#city0102_xjr{
+	width:120px; 
+	height:40px;
+	 float:left;
+	 margin-left:28px;
+}
+
+
+#cityInput02_xjr{
+	height:40px;
+	width:120px;
+	border:1px solid  #999;
+	float:left;
+	line-height:35px;
+	text-align:center;
+	
+}
+#citySelect01{
+	width:120px;
+	float:left;
+	position:relative;
+	z-index:3;
+}
+
+
+#citySelect02{
+	width:120px;
+	float:left;
+	position:relative;
+	z-index:3;
+}
+
+
+#city0103_xjr{
+	width:120px; 
+	height:40px;
+	 float:left;
+	 margin-left:28px;
+}
+
+
+#cityInput03_xjr{
+	height:40px;
+	width:120px;
+	border:1px solid  #999;
+	float:left;
+	line-height:35px;
+	text-align:center;
+	
+}
+
+#citySelect03{
+	width:120px;
+	float:left;
+	position:relative;
+	z-index:3;
+}
+
+
+
+#cityInput01_xjr{
+	
+	cursor:pointer;
+}
+#cityInput02_xjr{
+	
+	cursor:pointer;
+}
+#cityInput03_xjr{
+	
+	cursor:pointer;
+}
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yc.fresh.mapper.MenberInfoMapper">
+	<insert id="addInfo" parameterType="MenberInfo">
+		insert into menberinfo values(0, #{nickName}, '', password(#{pwd}), #{tel}, #{email}, '', sysdate() , #{status})
+	</insert>
+	<select id="login" parameterType="map" resultType="MenberInfo">
+		select * from menberInfo where nickname = #{nickname} and pwd = password(#{pwd})
+	</select>
+	
+	<select id="finds" resultType="GoodsInfo">
+		select gno, gname, pics, price, tno from goodsInfo gf1 where 3 > (select count(gno) from goodsInfo gf2 where gf1.tno = gf2.tno and gf2.gno > gf1.gno) order by gf1.tno asc, gf1.gno desc 
+	</select>
+	
+</mapper>

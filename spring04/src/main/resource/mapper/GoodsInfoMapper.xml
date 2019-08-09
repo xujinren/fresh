@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yc.fresh.mapper.GoodsInfoMapper">
+	<select id="add" parameterType="GoodsInfo">
+		insert into goodsInfo values(0,#{gname}, #{tno},${price}, #{intro}, #{balance}, #{pics},  #{unit}, #{qperied}, #{weight}, #{descr})
+	</select>
+	<select id="findByGno" parameterType="int" resultType="GoodsInfo">
+		select gno, gname, gf.tno, price, intro, balance, pics, unit, qperied, weight, descr, tname from goodsInfo gf, goodsType gt  where gt.tno = gf.tno gno = #{_parameter}
+	</select>
+	
+	<select id="findByType" parameterType="map" resultType="GoodsInfo">
+		select * from goodsInfo where tno = #{tno} order by gno desc limit #{page},#{rows}
+	</select>
+	
+	<select id="finds" resultType="GoodsInfo">
+		select gno, gname, pics, price, tno from goodsInfo gf1 where 4 > (select count(gno) from goodsInfo gf2 where gf1.tno = gf2.tno and gf2.gno > gf1.gno)
+		order by gf1.tno asc, gf1.gno desc
+	</select>
+	<select id="total" parameterType="int" resultType="int">
+		select count(*) from goodsInfo where tno = #{_parameter}
+	</select>
+	
+</mapper>
+
+
+
+

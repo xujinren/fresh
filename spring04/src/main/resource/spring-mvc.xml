@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	 xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/mvc
+           http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- 扫描包 表示不使用默认的过滤器，默认的会扫描service、 Componet、 Controller -->
+	<context:component-scan base-package="com.yc.fresh"
+		use-default-filters="false">
+		<context:include-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.RequestMapping" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ResponseBody" />
+	</context:component-scan>
+
+	<!-- 启用springmvc的注解 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+
+	<!-- 放过所有的静态资源 -->
+	<mvc:default-servlet-handler />
+
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/manager/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/back/page/**" />
+			<bean class="com.yc.fresh.interceptor.BackInterceptor"></bean>
+		</mvc:interceptor>
+		
+		<mvc:interceptor>
+			<mvc:mapping path="/front/**" />
+			<bean class="com.yc.fresh.interceptor.FrontInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- 文件上传控制类 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-8"></property>
+		<property name="maxUploadSize" value="10485760000"></property>
+		<property name="maxInMemorySize" value="2048"></property>
+	</bean>
+	
+	
+</beans>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>源辰-新闻类型管理</title>
+<link rel="shortcut icon" href="../../images/copylogo.png" type="image/x-icon" />
+<link rel="stylesheet" href="../css/common.css">
+<link rel="stylesheet" href="../css/main.css">
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript">
+
+$(function(){
+	show();
+});
+
+function show(){
+	$.post("../findAll01",null,function(data){
+	
+		var str = "";
+		$.each(data, function(index, item){
+			str += '<tr><td>'+item.aid+'</td><td>'+item.aname+'</td><td>'+item.tel+'</td><td><span  id='+item.aid+' onclick="reclick(this.id)"  style="cursor:pointer; " >[重置密码]</span></td>';
+		})		
+		$("#newstype_info").html("").append($(str));
+	}, "json");
+}
+
+
+function reclick(id){
+	alert("进入");
+	$.post("../rechongzhi", {aid:id}, function(data){
+		if($.trim(data) == 1){
+			alert("密码重置为手机号前六位...");
+			show();
+		}else{
+			alert("重置失败...");
+		}
+		
+	},"text");
+}
+
+//添加新闻信息
+function addNewsTypeInfo(){
+	var tname=$.trim( $("#tname").val());
+	var pwd = $.trim($("#pwd").val() );
+	var tel = $.trim($("#tel").val() );
+	
+	alert(tname);
+	alert(pwd);
+	alert(tel);
+	if (tname == "" || pwd == "" || tel == "") {
+		alert("请将数据完善...");
+		return;
+	}
+	
+	$.post("../add", {aname:tname, pwd:pwd, tel:tel}, function(data){
+		data = parseInt($.trim(data));
+		if(data == 1){
+			alert("添加成功！");
+			$("#tname").val("");
+			$("pwd").val("");
+			$("tel").val();
+		}
+	},"text");
+}
+
+</script>
+</head>
+<body>
+<div id="forms" class="mt10">
+	<div class="box">
+		<div class="box_border">
+			<div class="box_center">
+			<form id="myform">
+				姓名：<input type="text" id="tname" class="input-text 1h30" size="40"/>&nbsp;&nbsp;
+				密码：<input type="text" id="pwd" class="input-text 1h30" size="40"/>&nbsp;&nbsp;
+				手机号码：<input type="tel" id="tel" class="input-text 1h30" size="40"/>&nbsp;&nbsp;
+				<input type="button" name="button" class="btn btn82 btn_save2" onclick="addNewsTypeInfo()" value="添加"/>&nbsp;&nbsp;
+			</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="table" class="mt10">
+	<div class="box span10 oh">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="list_table">
+			<tr>	
+				<th>编号</th>
+				<th>姓名</th>
+				<th>电话</th>
+				<th>操作</th>
+			</tr>
+			<thead>
+             </thead>
+             <tbody id="newstype_info" align="center">
+             	
+             	
+             </tbody>
+		</table>
+        <div class="page mt10">
+		<div class="pagination">
+		</div>
+        </div>
+	</div>
+</div>
+</body>
+</html>
